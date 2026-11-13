@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tanzania Safari Trails</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Hanken+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6ecd6;--ink:#2b2218;--mute:#6d5c45;--card:#fffaf0;--line:#dcc89f;--acc:#c2571a;--grass:#6e7f3a;--sky:#2f4a63;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1a14;--ink:#f1e4c8;--mute:#b9a888;--card:#2a251b;--line:#4a4130;--acc:#f08a4b}}
+:root[data-theme="dark"]{--bg:#1d1a14;--ink:#f1e4c8;--mute:#b9a888;--card:#2a251b;--line:#4a4130;--acc:#f08a4b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+h1,h2,h3{font-family:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;line-height:1.05;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+/* hero with video background */
+.hero{position:relative;height:calc(100svh - 56px);min-height:460px;max-height:900px;overflow:hidden;background:#000;touch-action:pan-y}
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 1;
+  object-fit: cover;
+  opacity: 0.8; /* Slightly darkened for text readability */
+}
+.title{position:absolute;z-index:3;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 18px);padding:0 20px;color:#fff;max-width:760px;text-shadow: 2px 2px 8px rgba(0,0,0,0.9)}
+.title h1{font-size:clamp(2.3rem,8vw,5rem);font-weight:800;letter-spacing:-.02em}
+.title p{margin:.6rem 0 0;font-size:clamp(1rem,2.4vw,1.2rem);max-width:34ch}
+.hint{position:absolute;z-index:3;left:50%;bottom:10px;transform:translateX(-50%);background:rgba(43,26,12,.78);color:#fff3d8;padding:6px 14px;border-radius:999px;font-size:.9rem;white-space:nowrap}
+
+/* sections */
+section{padding:64px 20px;max-width:1100px;margin:0 auto}
+h2{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;letter-spacing:-.01em}
+.lead{color:var(--mute);max-width:52ch;margin:.7rem 0 0}
+
+/* parks slider */
+.rail-wrap{max-width:none;padding:0}
+.rail-head{max-width:1100px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.arrows{display:flex;gap:8px}
+.arrows button{width:46px;height:46px;border-radius:50%;border:2px solid var(--ink);background:transparent;font-size:1.2rem}
+.rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px max(20px,calc((100vw - 1060px)/2)) 20px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.park{flex:0 0 min(82vw,320px);scroll-snap-align:center;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:0;text-align:left;transition:transform .25s,border-color .25s,background .25s;overflow:hidden;display:flex;flex-direction:column}
+.park-img{width:100%;height:180px;object-fit:cover;display:block;border-bottom:2px solid var(--line)}
+.park-content{padding:18px;display:flex;flex-direction:column;flex:1;}
+.park h3{font-size:1.4rem}
+.park small{color:var(--mute);display:block;margin:.2rem 0 .6rem}
+.park .more{max-height:0;overflow:hidden;transition:max-height .35s;color:var(--mute);font-size:.95rem}
+.park[aria-expanded="true"]{border-color:var(--acc);transform:translateY(-6px)}
+.park[aria-expanded="true"] .more{max-height:480px}
+.park b{color:var(--acc)}
+
+/* walking band */
+.band{height:220px;position:relative;overflow:hidden;border-block:2px dashed var(--line);max-width:none;padding:0;background:url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;background-attachment: fixed;}
+.band p{position:absolute;right:14px;bottom:14px;margin:0;font-size:.9rem;color:#fff;text-shadow:1px 1px 4px #000;font-weight:600}
+
+/* activities */
+.acts{display:grid;gap:22px;margin-top:34px}
+.act{display:flex;gap:0;align-items:stretch;background:var(--card);border:2px solid var(--line);border-radius:26px;padding:0;opacity:0;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .8s;width:min(100%,700px);overflow:hidden}
+.act:nth-child(odd){transform:translateX(-90px)}
+.act:nth-child(even){transform:translateX(90px);margin-left:auto;flex-direction:row-reverse;text-align:right}
+.act.in{opacity:1;transform:none}
+.act-img{width:180px;object-fit:cover;flex-shrink:0;}
+.act-text{padding:20px;flex:1;}
+.act h3{font-size:1.3rem;margin-bottom:4px}
+.act p{margin:0;color:var(--mute)}
+nav{position:sticky;top:0;z-index:50;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--bg);border-bottom:2px solid var(--line)}
+nav b{font-family:"Bricolage Grotesque",sans-serif;font-size:1.1rem}
+nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:10px 12px;color:var(--ink);text-decoration:none;border-radius:999px;font-weight:600;font-size:.95rem}
+nav a:hover{background:var(--card)}
+.burger{display:none;width:44px;height:44px;border:2px solid var(--ink);border-radius:12px;background:transparent;font-size:1.3rem}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));margin-top:28px}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:20px 20px 20px 6px;padding:18px}
+.tile .em{font-size:2rem;display:block}
+.tile h3{font-size:1.15rem;margin:6px 0}
+.tile p{margin:0 0 6px;color:var(--mute);font-size:.95rem}
+.tile .px{color:var(--acc);font-weight:600}
+.meta{display:block;margin-top:8px;font-size:.88rem;color:var(--acc);font-weight:600}
+
+/* costs section */
+.est{margin-top:28px;display:grid;gap:20px;grid-template-columns:1fr 1fr;background:var(--card);border:2px solid var(--line);border-radius:26px;padding:22px}
+.est label{display:block;font-weight:600;margin-bottom:12px}
+.est select,.est input[type=number]{width:100%;min-height:46px;font:inherit;padding:8px 12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin-top:4px}
+.est .ck{display:flex;gap:10px;align-items:center;min-height:44px;font-weight:400}
+.est .ck input{width:22px;height:22px;margin:0}
+.out{align-self:center;text-align:center;background:var(--bg);border-radius:20px;padding:20px}
+.out strong{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(1.7rem,6vw,2.6rem);color:var(--acc);line-height:1.1}
+.out small{color:var(--mute);display:block;margin-top:6px}
+@media (max-width:760px){.burger{display:block}nav ul{display:none;position:absolute;top:56px;left:0;right:0;flex-direction:column;background:var(--bg);padding:8px 16px 16px;border-bottom:2px solid var(--line)}nav.open ul{display:flex}nav a{padding:14px 12px;font-size:1.05rem}}
+@media (max-width:700px){.est{grid-template-columns:1fr;padding:16px}section{padding:48px 16px}.rail-head{padding:0 16px}.title{padding:0 16px}.hint{font-size:.8rem}}
+@media (max-height:500px) and (orientation:landscape){.title h1{font-size:2rem}.title p{display:none}}
+@media (min-width:1400px){section{max-width:1240px}}
+footer{padding:40px 20px calc(40px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--mute);font-size:.9rem}
+
+@media (max-width:560px){
+  .act,.act:nth-child(even){width:100%;text-align:left;flex-direction:column;}
+  .act:nth-child(even){flex-direction:column-reverse;}
+  .act-img{width:100%;height:200px;}
+}
+@media (prefers-reduced-motion:reduce){.act{transition:none;opacity:1;transform:none!important}}
+
+/* ---------- ADMIN PANEL STYLES ---------- */
+.admin-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 999; width: 56px; height: 56px; border-radius: 50%; background: var(--acc); color: #fff; border: none; font-size: 1.6rem; box-shadow: 0 6px 20px rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; transition: transform .2s; }
+.admin-toggle:hover { transform: scale(1.1); }
+.admin-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.5); backdrop-filter: blur(4px); }
+.admin-overlay.open { display: flex; align-items: center; justify-content: center; padding: 20px; }
+.admin-panel { background: var(--bg); color: var(--ink); border-radius: 24px; border: 2px solid var(--line); width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+.admin-panel h2 { font-size: 1.6rem; margin-bottom: 4px; }
+.admin-panel .sub { color: var(--mute); margin: 0 0 20px; font-size: .92rem; }
+.admin-panel h3 { font-size: 1.15rem; margin: 20px 0 10px; border-bottom: 2px solid var(--line); padding-bottom: 6px; }
+.admin-panel label { display: block; font-weight: 600; font-size: .92rem; margin: 12px 0 4px; }
+.admin-panel input[type="text"], .admin-panel input[type="number"], .admin-panel input[type="url"], .admin-panel input[type="email"], .admin-panel input[type="password"], .admin-panel textarea { width: 100%; min-height: 40px; font: inherit; padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); }
+.admin-panel .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.admin-panel .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.admin-panel .btn-row { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+.admin-panel .btn { padding: 12px 24px; border-radius: 12px; border: 2px solid var(--ink); background: transparent; font-weight: 600; transition: background .2s, color .2s; }
+.admin-panel .btn:hover { background: var(--ink); color: var(--bg); }
+.admin-panel .btn-primary { background: var(--acc); border-color: var(--acc); color: #fff; }
+.admin-panel .btn-primary:hover { background: #a04510; }
+.admin-panel .btn-close { background: transparent; border-color: var(--line); margin-left: auto; }
+.admin-panel .btn-close:hover { background: var(--line); }
+.admin-tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.admin-tabs button { padding: 8px 16px; border-radius: 10px; border: 2px solid var(--line); background: var(--card); font-weight: 600; font-size: .9rem; }
+.admin-tabs button.active { background: var(--acc); border-color: var(--acc); color: #fff; }
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+.admin-notice { padding: 10px 16px; border-radius: 10px; font-size: .9rem; margin-top: 12px; display: none; }
+.admin-notice.show { display: block; }
+.admin-notice.ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.admin-notice.err { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.login-modal { display: none; position: fixed; inset: 0; z-index: 1100; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 20px; }
+.login-modal.open { display: flex; }
+.login-box { background: var(--bg); border: 2px solid var(--line); border-radius: 24px; padding: 32px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.5); text-align: center; }
+.login-box h2 { font-size: 1.5rem; margin-bottom: 4px; }
+.login-box .sub { color: var(--mute); font-size: .92rem; margin: 0 0 24px; }
+.login-box label { display: block; text-align: left; font-weight: 600; font-size: .92rem; margin: 14px 0 4px; }
+.login-box input { width: 100%; min-height: 46px; font: inherit; padding: 10px 14px; border: 2px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); }
+.login-box .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+.login-box .btn { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid var(--ink); background: transparent; font-weight: 600; }
+.login-box .btn:hover { background: var(--ink); color: var(--bg); }
+.login-box .btn-primary { background: var(--acc); border-color: var(--acc); color: #fff; }
+.login-box .btn-primary:hover { background: #a04510; }
+.login-error { display: none; padding: 10px 16px; border-radius: 10px; font-size: .9rem; margin-top: 12px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.login-error.show { display: block; }
+.admin-logout-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid var(--line); background: transparent; font-weight: 600; font-size: .88rem; margin-left: auto; }
+.admin-logout-btn:hover { background: var(--line); }
+.admin-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.admin-header h2 { margin: 0; }
+@media (max-width: 600px) { .admin-panel { padding: 18px; } .admin-panel .row, .admin-panel .row-3 { grid-template-columns: 1fr; } .admin-toggle { bottom: 16px; right: 16px; width: 48px; height: 48px; font-size: 1.3rem; } .login-box { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Main"><b>Tanzania Safari Trails</b><button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">&#9776;</button><ul><li><a href="#parks">Parks</a></li><li><a href="#transport">Getting there</a></li><li><a href="#acts">Activities</a></li><li><a href="#costs">Costs</a></li><li><a href="#plan">Plan</a></li></ul></nav>
+
+<!-- HERO SECTION WITH AUTOPLAY VIDEO -->
+<header class="hero" id="stage" aria-label="Savanna scene.">
+  <video class="hero-video" autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2000&auto=format&fit=crop">
+    <source src="https://cdn.pixabay.com/video/2020/09/09/49627-459397789_large.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="title">
+    <h1>Walk with Tanzania’s wild</h1>
+    <p>From the Serengeti plains to the chimps of Lake Tanganyika. Experience the ultimate African adventure.</p>
+  </div>
+  <div class="hint">Explore the beauty of Tanzania</div>
+</header>
+
+<section class="rail-wrap" id="parks">
+  <div class="rail-head">
+    <div><h2>Parks and reserves</h2><p class="lead">Swipe sideways. Tap a park to open it.</p></div>
+    <div class="arrows"><button id="prev" aria-label="Previous park">&#8592;</button><button id="next" aria-label="Next park">&#8594;</button></div>
+  </div>
+  <div class="rail" id="rail"></div>
+</section>
+
+<div class="band" id="band" aria-hidden="true"><p>The Great Migration and endless plains await</p></div>
+
+<section id="acts">
+  <h2>Things to do</h2>
+  <p class="lead">Explore our top activities, from game drives to cultural experiences.</p>
+  <div class="acts" id="actlist"></div>
+</section>
+
+<section id="transport"><h2>Getting there and around</h2><p class="lead">Most visitors fly into Kilimanjaro (JRO) for the north or Dar es Salaam (DAR) for the south, then continue by road or small plane.</p><div class="grid" id="tgrid"></div></section>
+<section id="costs"><h2>Costs and budget</h2><p class="lead">Prices are in US dollars per person per day and include lodging, meals, park fees and a shared vehicle with a guide. Try the estimator.</p><div class="grid" id="cgrid"></div>
+<div class="est"><div><label>Travel style<select id="st"><option value="b">Budget camping</option><option value="m" selected>Mid-range lodges</option><option value="l">Luxury camps</option></select></label><label>Days on safari<input type="number" id="dy" min="1" max="21" value="7" inputmode="numeric"></label><label>Travelers<input type="number" id="pp" min="1" max="12" value="2" inputmode="numeric"></label><label class="ck"><input type="checkbox" id="bl"> Add a balloon safari</label><label class="ck"><input type="checkbox" id="fl"> Add domestic flights (return)</label></div><div class="out"><small>Estimated total</small><strong id="tot"></strong><small id="per"></small><small>Excludes international flights, visas, tips and drinks.</small></div></div></section>
+<section id="plan"><h2>When to go</h2><div class="grid" id="sgrid"></div><h2 style="margin-top:48px">Before you travel</h2><div class="grid" id="kgrid"></div></section>
+<footer>Dates and prices are indicative and change often. Confirm fees with TANAPA, TAWA, Ngorongoro Conservation Area Authority or your operator. Check each park’s current conditions and licensed operators before you travel.</footer>
+
+<!-- ADMIN TOGGLE BUTTON -->
+<button class="admin-toggle" id="adminToggle" aria-label="Admin login">🔒</button>
+
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <p class="sub">Enter the admin email and password to manage the site.</p>
+    <label for="loginEmail">Email</label>
+    <input type="email" id="loginEmail" autocomplete="username" placeholder="you@example.com">
+    <label for="loginPass">Password</label>
+    <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••">
+    <div class="login-error" id="loginError">Invalid email or password. Access denied.</div>
+    <div class="btn-row">
+      <button class="btn" id="loginCancel">Cancel</button>
+      <button class="btn btn-primary" id="loginSubmit">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <button class="admin-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <p class="sub">Manage pricing and fees. Changes apply instantly.</p>
+
+    <div class="admin-tabs">
+      <button class="active" data-tab="pricing">Pricing &amp; Fees</button>
+    </div>
+
+    <!-- PRICING TAB -->
+    <div class="admin-tab-content active" id="tab-pricing">
+      <h3>Park Entry Fees (USD per adult per day)</h3>
+      <div id="parkFeeFields"></div>
+
+      <h3>Activity Prices</h3>
+      <div id="activityPriceFields"></div>
+
+      <h3>Estimator Base Rates (USD per person per day)</h3>
+      <div class="row-3">
+        <div><label>Budget</label><input type="number" id="rateBudget" min="0" step="10" value="200"></div>
+        <div><label>Mid-range</label><input type="number" id="rateMid" min="0" step="10" value="350"></div>
+        <div><label>Luxury</label><input type="number" id="rateLux" min="0" step="10" value="800"></div>
+      </div>
+
+      <h3>Add-on Prices</h3>
+      <div class="row">
+        <div><label>Balloon safari (per person)</label><input type="number" id="addonBalloon" min="0" step="10" value="500"></div>
+        <div><label>Domestic flights (per person)</label><input type="number" id="addonFlights" min="0" step="10" value="250"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="savePricingBtn">Save Pricing</button>
+      </div>
+      <div class="admin-notice" id="pricingNotice"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-close" id="closeAdmin">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   AUTHENTICATION
+   ============================================================ */
+var ADMIN_EMAIL = 'mkgallerystore@gmail.com';
+var ADMIN_PASS = 'Lushino@#123456';
+var AUTH_KEY = 'tanzania_admin_auth';
+
+function isLoggedIn() { try { return sessionStorage.getItem(AUTH_KEY) === 'true'; } catch(e) { return false; } }
+function setLoggedIn(val) { try { if (val) sessionStorage.setItem(AUTH_KEY, 'true'); else sessionStorage.removeItem(AUTH_KEY); } catch(e) {} }
+
+var loginModal = document.getElementById('loginModal');
+var loginEmail = document.getElementById('loginEmail');
+var loginPass = document.getElementById('loginPass');
+var loginError = document.getElementById('loginError');
+var loginSubmit = document.getElementById('loginSubmit');
+var loginCancel = document.getElementById('loginCancel');
+var adminToggle = document.getElementById('adminToggle');
+var adminOverlay = document.getElementById('adminOverlay');
+var logoutBtn = document.getElementById('logoutBtn');
+
+function openLogin() { loginModal.classList.add('open'); loginError.classList.remove('show'); loginEmail.value = ''; loginPass.value = ''; setTimeout(function(){ loginEmail.focus(); }, 100); }
+function closeLogin() { loginModal.classList.remove('open'); }
+function openAdminPanel() { adminOverlay.classList.add('open'); renderAdminPricing(); }
+function closeAdminPanel() { adminOverlay.classList.remove('open'); }
+
+loginSubmit.addEventListener('click', function() {
+  var email = loginEmail.value.trim().toLowerCase();
+  var pass = loginPass.value;
+  if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASS) {
+    setLoggedIn(true); closeLogin(); openAdminPanel();
+  } else {
+    loginError.classList.add('show'); loginPass.value = ''; loginPass.focus();
+  }
+});
+
+loginCancel.addEventListener('click', closeLogin);
+loginModal.addEventListener('click', function(e) { if (e.target === loginModal) closeLogin(); });
+[loginEmail, loginPass].forEach(function(inp) { inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); loginSubmit.click(); } }); });
+adminToggle.addEventListener('click', function() { if (isLoggedIn()) { openAdminPanel(); } else { openLogin(); } });
+logoutBtn.addEventListener('click', function() { setLoggedIn(false); closeAdminPanel(); adminToggle.textContent = '🔒'; });
+document.getElementById('closeAdmin').addEventListener('click', closeAdminPanel);
+adminOverlay.addEventListener('click', function(e) { if (e.target === adminOverlay) closeAdminPanel(); });
+
+function syncAuthUI() { adminToggle.textContent = isLoggedIn() ? '⚙️' : '🔒'; adminToggle.setAttribute('aria-label', isLoggedIn() ? 'Open admin panel' : 'Admin login'); }
+syncAuthUI();
+
+/* ============================================================
+   CORE DATA (parks, activities, estimator) WITH YOUR IMAGES
+   ============================================================ */
+var parks=[
+["Serengeti","Mara and Simiyu","🦁🦓🐃","Endless plains and the Great Migration of wildebeest and zebra. Lions, cheetahs and leopards follow the herds.","Jun–Oct for river crossings; Jan–Feb for calving", "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800&auto=format&fit=crop"],
+["Ngorongoro Crater","Arusha","🦏🐘🦛","A volcanic caldera that holds a dense mix of wildlife, including black rhino, in one bowl.","Jun–Sep for dry roads", "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=800&auto=format&fit=crop"],
+["Tarangire","Manyara","🐘🦒🌳","Huge elephant herds shelter under baobab trees along the river in the dry season.","Jun–Oct", "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=800&auto=format&fit=crop"],
+["Lake Manyara","Manyara","🦩🦁🐒","A rift-valley lake with flamingos, baboons and tree-climbing lions in groundwater forest.","Jun–Oct", "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?q=80&w=800&auto=format&fit=crop"],
+["Mikumi","Morogoro","🦒🦛🐘","The nearest big park to Dar es Salaam. Giraffe, hippo pools and open floodplain.","Jun–Oct", "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?q=80&w=800&auto=format&fit=crop"],
+["Ruaha","Iringa","🐕🦌🐘","Tanzania’s largest park. Rugged and quiet, with wild dogs, kudu and large elephant herds.","Jun–Nov", "https://images.unsplash.com/photo-1563540706914-741b22e64000?q=80&w=800&auto=format&fit=crop"],
+["Nyerere (Selous)","Morogoro and Lindi","🐊🦛🐘","Boat safaris on the Rufiji River, plus walking safaris and a large wild dog population.","Jun–Oct", "https://images.unsplash.com/photo-1523805009345-7448845a9e53?q=80&w=800&auto=format&fit=crop"],
+["Katavi","Rukwa and Katavi","🦛🐃🐊","Remote western wilderness where hippo and buffalo crowd the shrinking floodplains.","May–Oct", "https://images.unsplash.com/photo-1521651201144-634f700b36ef?q=80&w=800&auto=format&fit=crop"],
+["Arusha NP","Arusha","🐒🦒🏔️","Mount Meru, colobus monkeys, Momella lakes and canoe or walking safaris near Arusha town.","Jun–Feb", "https://images.unsplash.com/photo-1580741042032-23b411842cf2?q=80&w=800&auto=format&fit=crop"],
+["Kilimanjaro NP","Kilimanjaro","🏔️🌄🥾","Africa’s highest mountain. Climb through rainforest, moorland and alpine desert.","Jan–Mar and Jun–Oct", "https://images.unsplash.com/photo-1589553416260-f586c8f1514f?q=80&w=800&auto=format&fit=crop"],
+["Gombe Stream","Kigoma","🐒🌿🌊","Chimpanzee trekking on the shore of Lake Tanganyika, where Jane Goodall began her research.","May–Oct", "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?q=80&w=800&auto=format&fit=crop"],
+["Mahale Mountains","Katavi and Kigoma","🐒⛰️🛶","Remote chimp country that you reach by boat, with beaches on Lake Tanganyika.","May–Oct", "https://images.unsplash.com/photo-1552410260-0fd9b577afa6?q=80&w=800&auto=format&fit=crop"],
+["Saadani","Pwani and Tanga","🐘🌊🦒","Beach meets bush. Wildlife, mangroves and the Indian Ocean in one weekend trip.","Jun–Oct", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop"],
+["Udzungwa Mountains","Iringa and Morogoro","🌲🐒💧","Forest trails, waterfalls and rare primates that live nowhere else.","Jun–Oct", "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=800&auto=format&fit=crop"]
+];
+
+var info=[
+["Northern Tanzania, between Arusha and Lake Victoria","Fly to Seronera airstrip (1.5–2 hrs from Arusha) or drive 8–9 hrs by 4x4","About $70–85 per adult per day, plus vehicle and camping fees"],
+["West of Arusha, near Karatu, on the way to Serengeti","Drive 3–4 hrs from Arusha, or fly to Lake Manyara airstrip then drive","About $70 entry per day plus about $295 crater service fee per vehicle"],
+["Manyara Region, about 120 km southwest of Arusha","Drive 2–3 hrs from Arusha","About $60–70 per adult per day"],
+["Near Mto wa Mbu, about 130 km from Arusha","Drive 2–2.5 hrs from Arusha","About $50–60 per adult per day"],
+["Morogoro Region, about 280 km west of Dar es Salaam","Drive 4–5 hrs from Dar, or take the SGR train to Morogoro and drive about 1 hr","About $30 per adult per day"],
+["Iringa Region, about 130 km from Iringa town","Fly from Dar or Arusha (about 2 hrs), or drive 2–3 hrs from Iringa","About $30–35 per adult per day"],
+["South of Dar es Salaam, about 230 km away","Fly 45–60 min from Dar, or drive 6–7 hrs","About $50–60 per adult per day plus boat activity fees"],
+["Southwest Tanzania, near Mpanda","Charter or scheduled flight from Arusha or Dar; the road is very long","About $30–40 per adult per day"],
+["25 km from Arusha town","Drive 45–60 min from Arusha","About $50 per adult per day"],
+["Near Moshi, about 45 km from Kilimanjaro Airport","Fly to JRO, then drive 1–1.5 hrs to the gate","About $70 per day conservation fee plus huts, crew and guides; full climbs cost about $2,000–3,500"],
+["Kigoma Region, on Lake Tanganyika","Fly to Kigoma, then take a boat for 1–2 hrs","Roughly $100–200 per day including the chimp trekking permit"],
+["Lake Tanganyika, south of Kigoma","Charter flight, or a boat from Kigoma that takes many hours","Roughly $100–300 per day with permit, often paid through your lodge"],
+["Coast of Pwani and Tanga, about 130 km north of Dar es Salaam","Drive 3–4 hrs from Dar, or fly 30 min to Saadani airstrip","About $30 per adult per day"],
+["Near Mikumi, in Iringa and Morogoro regions","Drive about 1 hr from Mikumi, or 5–6 hrs from Dar","About $30 per adult per day"]
+];
+
+var actInfo=[
+["$50–150 per person for a shared half-day; usually in packages","3–8 hrs","Serengeti, Ngorongoro, Tarangire, Ruaha, Mikumi"],
+["About $500–600 per person","1 hr flight plus breakfast","Serengeti"],
+["About $20–60 per person for guide fees","2–4 hrs","Arusha NP, Nyerere, Ruaha"],
+["Kilimanjaro about $2,000–3,500; Meru about $900–1,300","3–9 days","Kilimanjaro and Mount Meru"],
+["About $100–200 per person for the permit","1–4 hrs on the trail","Gombe and Mahale"],
+["About $30–80 per person","2–3 hrs","Nyerere and Arusha NP"],
+["About $100–500 or more per person per night","Per night","Most parks"],
+["About $20–60 per person","Half day","Mto wa Mbu, Karatu, Lake Eyasi"]
+];
+
+var acts=[
+["🚙","Game drives","Sunrise and sunset drives in an open-roof vehicle, when predators are active.", "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=400&auto=format&fit=crop"],
+["🎈","Balloon safari","Float over the Serengeti at dawn, then eat breakfast on the plains.", "https://images.unsplash.com/photo-1523805009345-7448845a9e53?q=80&w=400&auto=format&fit=crop"],
+["🥾","Walking safari","Follow a ranger on foot and learn tracks, plants and insects up close.", "https://images.unsplash.com/photo-1629855731293-664951c83b4a?q=80&w=400&auto=format&fit=crop"],
+["🏔️","Mountain climbing","Kilimanjaro and Meru treks, from day hikes to multi-day summit routes.", "https://images.unsplash.com/photo-1589553416260-f586c8f1514f?q=80&w=400&auto=format&fit=crop"],
+["🐒","Chimp trekking","Hike into Gombe or Mahale to sit near wild chimpanzees.", "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?q=80&w=400&auto=format&fit=crop"],
+["🛶","Boat and canoe safari","Glide past hippos and crocodiles on the Rufiji River or Momella lakes.", "https://images.unsplash.com/photo-1523805009345-7448845a9e53?q=80&w=400&auto=format&fit=crop"],
+["🔥","Camp nights","Sleep in a tented camp, hear the lions and watch the stars.", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop"],
+["🏺","Cultural visits","Meet Maasai, Hadzabe and coastal communities with local guides.", "https://images.unsplash.com/photo-1523805009345-7448845a9e53?q=80&w=400&auto=format&fit=crop"]
+];
+
+/* ============================================================
+   ADMIN: storage helpers
+   ============================================================ */
+var STORAGE_KEY = 'tanzania_admin_v1';
+function loadAdminData() {
+  try { var raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch(e) {}
+  return { parkFees: {}, activityPrices: {}, rates: { budget: 200, mid: 350, lux: 800 }, addons: { balloon: 500, flights: 250 } };
+}
+function saveAdminData(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
+var adminData = loadAdminData();
+
+/* ============================================================
+   RENDER PARKS
+   ============================================================ */
+var rail=document.getElementById('rail');
+function renderParks() {
+  rail.innerHTML = '';
+  parks.forEach(function(p,i){
+    var b=document.createElement('button');b.className='park';b.setAttribute('aria-expanded','false');
+    var feeText = info[i][2];
+    if (adminData.parkFees[p[0]]) {
+      var f = adminData.parkFees[p[0]];
+      feeText = 'About $' + f[0] + '–' + f[1] + ' per adult per day';
+    }
+    b.innerHTML='<img src="'+p[5]+'" alt="'+p[0]+'" class="park-img"><div class="park-content"><h3>'+p[0]+'</h3><small>'+p[1]+'</small><div class="more">'+p[3]+'<br><br><b>Where:</b> '+info[i][0]+'<br><br><b>Getting there:</b> '+info[i][1]+'<br><br><b>Fees:</b> '+feeText+'<br><br><b>Best time:</b> '+p[4]+'</div></div>';
+    b.onclick=function(){var o=b.getAttribute('aria-expanded')==='true';
+      rail.querySelectorAll('.park').forEach(function(x){x.setAttribute('aria-expanded','false')});
+      b.setAttribute('aria-expanded',o?'false':'true');
+      if(!o)b.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});};
+    rail.appendChild(b);
+  });
+}
+renderParks();
+document.getElementById('next').onclick=function(){rail.scrollBy({left:rail.clientWidth*.7,behavior:'smooth'})};
+document.getElementById('prev').onclick=function(){rail.scrollBy({left:-rail.clientWidth*.7,behavior:'smooth'})};
+
+/* ============================================================
+   RENDER ACTIVITIES
+   ============================================================ */
+var al=document.getElementById('actlist');
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.2});
+function renderActivities() {
+  al.innerHTML = '';
+  acts.forEach(function(a,i){
+    var d=document.createElement('div');d.className='act';
+    var priceText = actInfo[i][0];
+    var durText = actInfo[i][1];
+    if (adminData.activityPrices[a[1]]) {
+      var ap = adminData.activityPrices[a[1]];
+      priceText = ap.price; durText = ap.duration;
+    }
+    d.innerHTML='<img src="'+a[3]+'" alt="'+a[1]+'" class="act-img"><div class="act-text"><h3>'+a[1]+'</h3><p>'+a[2]+'</p><span class="meta">'+priceText+' · '+durText+'</span><p style="font-size:0.85rem;margin-top:6px;color:var(--acc);">'+actInfo[i][2]+'</p></div>';
+    al.appendChild(d);
+  });
+  document.querySelectorAll('.act').forEach(function(a){io.observe(a)});
+}
+renderActivities();
+
+/* ============================================================
+   EXTRA CONTENT TILES
+   ============================================================ */
+function tile(id,em,h,t,px){var d=document.createElement('div');d.className='tile';d.innerHTML='<span class="em">'+em+'</span><h3>'+h+'</h3><p>'+t+'</p>'+(px?'<span class="px">'+px+'</span>':'');document.getElementById(id).appendChild(d)}
+
+[['✈️','International flights','Kilimanjaro (JRO) serves Arusha and the north. Julius Nyerere (DAR) serves the south and coast. Zanzibar (ZNZ) suits a beach add-on.','Varies by season'],
+['🛩️','Small domestic planes','Scheduled and charter flights link Arusha, Serengeti, Dar, Ruaha, Nyerere and Kigoma. Baggage is limited to soft bags.','About $150–400 per sector'],
+['🚙','Safari 4x4','A pop-up roof Land Cruiser with a driver-guide is the standard way to see the parks. Roads in wet months can be slow.','About $200–350 per vehicle per day'],
+['🚌','Buses and dala-dala','Good for towns such as Arusha, Moshi, Morogoro and Iringa. Parks need a vehicle, so combine with a tour.','About $3–10 per leg'],
+['🚆','SGR train','The electric railway links Dar es Salaam, Morogoro and Dodoma. It is a comfortable way to reach Mikumi and Udzungwa.','Ticket price depends on class'],
+['⛴️','Boats and ferries','Ferries run from Dar to Zanzibar. Lake Tanganyika boats reach Gombe and Mahale. Check schedules before you plan.','About $35–50 to Zanzibar'],
+['🚕','Taxis and ride apps','Ride apps work in Dar es Salaam and Arusha. Airport transfers can be booked in advance.','About $20–60 per transfer']].forEach(function(a){tile('tgrid',a[0],a[1],a[2],a[3])});
+
+[['⛺','Budget','Camping, basic lodges, shared group vehicle.','$200–300 per day'],['🏨','Mid-range','Comfortable lodges and tented camps, private or shared vehicle.','$350–600 per day'],['🌅','Luxury','Premium camps, private guide, often flights between parks.','$800–1,500 per day']].forEach(function(a){tile('cgrid',a[0],a[1],a[2],a[3])});
+
+[['☀️','Jun–Oct: dry season','Best game viewing and the Great Migration river crossings. Busiest and most expensive.','High season'],['🐃','Jan–Feb: calving','Wildebeest calve in the southern Serengeti and Ndutu, and predators hunt close by.','High season'],['🌧️','Nov–Dec: short rains','Green landscapes and good birdwatching. Fewer visitors.','Shoulder season'],['🌿','Mar–May: long rains','Some roads and camps close. Prices are lowest and the parks are quiet.','Low season']].forEach(function(a){tile('sgrid',a[0],a[1],a[2],a[3])});
+
+[['🛂','Visa','Most visitors apply for an e-visa online before they travel. Check your nationality’s rules.',''],['💉','Health','Ask a doctor about malaria prevention and routine vaccines. A yellow fever certificate may be needed depending on your route.',''],['🎒','Packing','Pack layers, neutral colors, a hat, sunscreen, binoculars and a soft bag for small planes.',''],['🦁','Safety in the park','Stay inside the vehicle, keep your distance and follow your guide. Never feed animals.',''],['💳','Payments','Park fees are mostly paid by card or online. Carry some cash for tips and small purchases.',''],['🧭','Booking','Choose a licensed operator and compare what is included, such as fuel, fees and transfers.','']].forEach(function(a){tile('kgrid',a[0],a[1],a[2],a[3])});
+
+/* ============================================================
+   ESTIMATOR
+   ============================================================ */
+function g(i){return document.getElementById(i)}
+function f(n){return n.toLocaleString('en-US')}
+function est(){
+  var rates = adminData.rates, addons = adminData.addons;
+  var R = { b: [rates.budget, Math.round(rates.budget * 1.5)], m: [rates.mid, Math.round(rates.mid * 1.7)], l: [rates.lux, Math.round(rates.lux * 1.9)] };
+  var s = R[g('st').value];
+  var d = Math.min(21, Math.max(1, +g('dy').value || 1));
+  var p = Math.min(12, Math.max(1, +g('pp').value || 1));
+  var lo = s[0] * d * p, hi = s[1] * d * p;
+  if (g('bl').checked) { lo += addons.balloon * p; hi += Math.round(addons.balloon * 1.2) * p; }
+  if (g('fl').checked) { lo += addons.flights * p; hi += Math.round(addons.flights * 1.6) * p; }
+  g('tot').textContent = '$' + f(lo) + ' – $' + f(hi);
+  g('per').textContent = 'About $' + f(Math.round(lo/p)) + ' – $' + f(Math.round(hi/p)) + ' per person';
+}
+['st','dy','pp','bl','fl'].forEach(function(i){g(i).addEventListener('input',est);g(i).addEventListener('change',est)});
+est();
+
+/* ============================================================
+   NAV / BURGER
+   ============================================================ */
+var nav=g('nav'),bg=g('burger');
+bg.onclick=function(){var o=nav.classList.toggle('open');bg.setAttribute('aria-expanded',o)};
+nav.querySelectorAll('a').forEach(function(a){a.onclick=function(){nav.classList.remove('open');bg.setAttribute('aria-expanded','false')}});
+
+/* ============================================================
+   PRICING MANAGEMENT (Admin Panel)
+   ============================================================ */
+var parkFeeFields = document.getElementById('parkFeeFields');
+var activityPriceFields = document.getElementById('activityPriceFields');
+var rateBudget = document.getElementById('rateBudget');
+var rateMid = document.getElementById('rateMid');
+var rateLux = document.getElementById('rateLux');
+var addonBalloon = document.getElementById('addonBalloon');
+var addonFlights = document.getElementById('addonFlights');
+var savePricingBtn = document.getElementById('savePricingBtn');
+var pricingNotice = document.getElementById('pricingNotice');
+
+function showNotice(el, msg, ok) {
+  el.textContent = msg; el.className = 'admin-notice show ' + (ok ? 'ok' : 'err');
+  setTimeout(function(){ el.className = 'admin-notice'; }, 3000);
+}
+
+function renderAdminPricing() {
+  parkFeeFields.innerHTML = '';
+  parks.forEach(function(p) {
+    var current = adminData.parkFees[p[0]];
+    var defaultLow = 30, defaultHigh = 70;
+    var match = info[parks.indexOf(p)][2].match(/\$([\d,]+)–([\d,]+)/);
+    if (match) { defaultLow = parseInt(match[1].replace(/,/g,'')); defaultHigh = parseInt(match[2].replace(/,/g,'')); }
+    var low = current ? current[0] : defaultLow;
+    var high = current ? current[1] : defaultHigh;
+    var div = document.createElement('div');
+    div.className = 'row'; div.style.marginBottom = '8px';
+    div.innerHTML = '<div><label>' + p[0] + ' (low $)</label><input type="number" min="0" data-park="' + p[0] + '" data-type="low" value="' + low + '"></div><div><label>' + p[0] + ' (high $)</label><input type="number" min="0" data-park="' + p[0] + '" data-type="high" value="' + high + '"></div>';
+    parkFeeFields.appendChild(div);
+  });
+
+  activityPriceFields.innerHTML = '';
+  acts.forEach(function(a) {
+    var current = adminData.activityPrices[a[1]];
+    var defaultPrice = actInfo[acts.indexOf(a)][0], defaultDur = actInfo[acts.indexOf(a)][1];
+    var price = current ? current.price : defaultPrice;
+    var dur = current ? current.duration : defaultDur;
+    var div = document.createElement('div');
+    div.className = 'row'; div.style.marginBottom = '8px';
+    div.innerHTML = '<div><label>' + a[1] + ' – Price</label><input type="text" data-act="' + a[1] + '" data-type="price" value="' + price + '"></div><div><label>' + a[1] + ' – Duration</label><input type="text" data-act="' + a[1] + '" data-type="duration" value="' + dur + '"></div>';
+    activityPriceFields.appendChild(div);
+  });
+
+  rateBudget.value = adminData.rates.budget; rateMid.value = adminData.rates.mid; rateLux.value = adminData.rates.lux;
+  addonBalloon.value = adminData.addons.balloon; addonFlights.value = adminData.addons.flights;
+}
+
+savePricingBtn.addEventListener('click', function() {
+  var newParkFees = {};
+  parkFeeFields.querySelectorAll('input[data-park]').forEach(function(inp) {
+    var park = inp.dataset.park, type = inp.dataset.type, val = parseInt(inp.value) || 0;
+    if (!newParkFees[park]) newParkFees[park] = [0, 0];
+    if (type === 'low') newParkFees[park][0] = val; else newParkFees[park][1] = val;
+  });
+  var newActPrices = {};
+  activityPriceFields.querySelectorAll('input[data-act]').forEach(function(inp) {
+    var act = inp.dataset.act, type = inp.dataset.type;
+    if (!newActPrices[act]) newActPrices[act] = { price: '', duration: '' };
+    if (type === 'price') newActPrices[act].price = inp.value; else newActPrices[act].duration = inp.value;
+  });
+  adminData.parkFees = newParkFees; adminData.activityPrices = newActPrices;
+  adminData.rates = { budget: parseInt(rateBudget.value) || 200, mid: parseInt(rateMid.value) || 350, lux: parseInt(rateLux.value) || 800 };
+  adminData.addons = { balloon: parseInt(addonBalloon.value) || 500, flights: parseInt(addonFlights.value) || 250 };
+  saveAdminData(adminData);
+  renderParks(); renderActivities(); est();
+  showNotice(pricingNotice, 'Pricing saved and applied to the page!', true);
+});
+</script>
+</body>
+</html>
