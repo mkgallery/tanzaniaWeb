@@ -1,0 +1,30 @@
+backend:
+  name: github
+  repo: YOUR_GITHUB_USERNAME/YOUR_REPO_NAME
+  branch: main
+  base_url: https://YOUR-CLOUDFLARE-WORKER-URL.workers.dev
+  auth_endpoint: /auth
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - label: "Website Prices"
+    name: "pricing"
+    files:
+      - label: "Park Fees & Prices"
+        name: "prices"
+        file: "content/prices.json"
+        fields:
+          - { label: "Budget Rate (per day)", name: "budget", widget: "number", value_type: "int" }
+          - { label: "Mid-Range Rate (per day)", name: "mid", widget: "number", value_type: "int" }
+          - { label: "Luxury Rate (per day)", name: "lux", widget: "number", value_type: "int" }
+          - { label: "Balloon Safari Price", name: "balloon", widget: "number", value_type: "int" }
+          - { label: "Domestic Flights Price", name: "flights", widget: "number", value_type: "int" }
+  - label: "Gallery Images"
+    name: "gallery"
+    folder: "content/gallery"
+    create: true
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Image", name: "image", widget: "image" }
